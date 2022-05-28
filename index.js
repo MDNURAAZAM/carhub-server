@@ -35,9 +35,24 @@ async function run() {
       res.send(product);
     });
 
+    app.get("/order", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const query = { email: email };
+      const orders = await ordersCollection.find(query).toArray();
+      res.send(orders);
+    });
+
     app.post("/order", async (req, res) => {
       const order = req.body;
       const result = await ordersCollection.insertOne(order);
+      res.send(result);
+    });
+
+    app.delete("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await ordersCollection.deleteOne(filter);
       res.send(result);
     });
   } finally {
