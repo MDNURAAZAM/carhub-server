@@ -20,6 +20,7 @@ async function run() {
     await client.connect();
     const productsCollection = client.db("carParts").collection("products");
     const ordersCollection = client.db("carParts").collection("orders");
+    const reviewsCollection = client.db("carParts").collection("reviews");
 
     app.get("/products", async (req, res) => {
       const query = {};
@@ -52,6 +53,19 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const result = await ordersCollection.deleteOne(filter);
+      res.send(result);
+    });
+
+    app.get("/reviews", async (req, res) => {
+      const query = {};
+      const cursor = reviewsCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      const result = await reviewsCollection.insertOne(review);
       res.send(result);
     });
   } finally {
