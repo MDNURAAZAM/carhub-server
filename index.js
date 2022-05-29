@@ -37,22 +37,6 @@ async function run() {
       res.send(product);
     });
 
-    app.put("user/:email", async (req, res) => {
-      const email = req.params.email;
-      const user = req.body;
-      const filter = { email: email };
-      const options = { upsert: true };
-      const updateDoc = {
-        $set: user,
-      };
-      const result = await usersCollection.updateOne(
-        filter,
-        updateDoc,
-        options
-      );
-      res.send(result);
-    });
-
     app.get("/order", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
@@ -83,6 +67,22 @@ async function run() {
     app.post("/review", async (req, res) => {
       const review = req.body;
       const result = await reviewsCollection.insertOne(review);
+      res.send(result);
+    });
+
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.send(result);
     });
   } finally {
